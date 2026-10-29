@@ -278,3 +278,9 @@ input:focus, textarea:focus, .btn:focus-visible, .nav a:focus-visible { outline:
 /* Centred intro blocks (Home, Explore, Inner Sun) */
 .narrow.center { margin-left: auto; margin-right: auto; text-align: center; }
 .narrow.center .btns { justify-content: center; }
+
+/* Connect page: equal-height cards, buttons on one line, no empty strip at the bottom */
+#updates, #contact { display: flex; flex-direction: column; }
+#updates form.stack, #contact form.stack { flex: 1; display: flex; flex-direction: column; max-width: none; }
+#updates form.stack .btn, #contact form.stack .btn { margin-top: auto; }
+.form-msg:empty { display: none; }
