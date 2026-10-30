@@ -13,17 +13,12 @@
 </head>
 <body>
 <main id="main">
-<section class="block">
-  <div class="wrap center">
-    <p class="eyebrow">Book One</p>
-    <h1>CONSCIOUSNESS CALLING — LIVING WITH I AM PRESENCE</h1>
-    <p class="lead">Author: Raghuveera (Ra Soul)</p>
-    <div class="bookcovers">
-      <figure class="cover-fig"><img src="assets/img/img-04a-book-front-cover.webp" alt="Front cover of Consciousness Calling — Living with I AM Presence by Raghuveera (Ra Soul): a glowing golden circle holding a triangle and spiral above a lotus, over a still, luminous sea."></figure>
-      <figure class="cover-fig"><img src="assets/img/img-04b-book-back-cover.webp" alt="Back cover of the book, with the opening question “What changes when we stop searching outside and begin observing the life already moving within us?”, a short description, and the line “We cannot transcend what we have not first learned to live.”"></figure>
-    </div>
-    <!-- Author-designed covers shown for layout; StoryMirror to confirm final production-approved files. -->
-    <div class="narrow booktext">
+<section class="block bookhero">
+  <div class="wrap two-col">
+    <div class="booktext">
+      <p class="eyebrow">Book One</p>
+      <h1 class="bk-title">CONSCIOUSNESS CALLING<span class="bk-sub">LIVING WITH I AM PRESENCE</span></h1>
+      <p class="lead">Author: Raghuveera (Ra Soul)</p>
       <p>What if the Divine Presence you have been seeking is not somewhere beyond you, but already present within? Book One explores awareness, perception, thought, emotion, identity, silence, the Heart as doorway, I AM Presence, Śiva–Śakti, and the Living Field. It invites readers to bring recognition into ordinary human living, not to abandon life or reject the mind.</p>
       <h2>Book details</h2>
       <!-- Values intentionally blank: StoryMirror to supply verified ISBN, price, launch date, availability and purchase URL. -->
@@ -35,9 +30,20 @@
       </dl>
       <div class="btns"><a class="btn" href="connect.html#updates">Get Book Updates</a></div>
     </div>
+    <!-- Author-designed covers shown for layout; StoryMirror to confirm final production-approved files. Click the cover behind to bring it forward. -->
+    <div class="cover-stack" id="coverStack" data-front="front">
+      <button type="button" class="cv cv-front" aria-label="Show front cover"><img src="assets/img/img-04a-book-front-cover.webp" alt="Front cover of Consciousness Calling — Living with I AM Presence by Raghuveera (Ra Soul): a glowing golden circle holding a triangle and spiral above a lotus, over a still, luminous sea."></button>
+      <button type="button" class="cv cv-back" aria-label="Show back cover"><img src="assets/img/img-04b-book-back-cover.webp" alt="Back cover of the book, with the opening question “What changes when we stop searching outside and begin observing the life already moving within us?”, a short description, and the line “We cannot transcend what we have not first learned to live.”"></button>
+    </div>
   </div>
 </section>
 </main>
 <script src="js/site.js"></script>
+<script>
+(function(){var st=document.getElementById("coverStack");if(!st)return;
+st.addEventListener("click",function(e){var b=e.target.closest(".cv");if(!b)return;
+var isBack=b.classList.contains("cv-back"),showing=st.getAttribute("data-front");
+if((isBack&&showing==="front")||(!isBack&&showing==="back")){st.setAttribute("data-front",showing==="front"?"back":"front");}});})();
+</script>
 </body>
 </html>

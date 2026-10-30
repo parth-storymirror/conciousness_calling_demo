@@ -284,3 +284,72 @@ input:focus, textarea:focus, .btn:focus-visible, .nav a:focus-visible { outline:
 #updates form.stack, #contact form.stack { flex: 1; display: flex; flex-direction: column; max-width: none; }
 #updates form.stack .btn, #contact form.stack .btn { margin-top: auto; }
 .form-msg:empty { display: none; }
+
+/* Home Book One: overlapping covers, click the one behind to bring it forward */
+.cover-stack{position:relative;width:100%;max-width:460px;margin:0 auto;aspect-ratio:1/1.2}
+.cover-stack .cv{position:absolute;width:62%;padding:0;border:0;background:none;cursor:pointer;transition:all .6s cubic-bezier(.4,.1,.2,1);filter:drop-shadow(0 18px 28px rgba(28,23,64,.3))}
+.cover-stack .cv img{display:block;width:100%;border-radius:4px}
+.cover-stack[data-front="front"] .cv-front,.cover-stack[data-front="back"] .cv-back{left:0;top:-4%;z-index:2;transform:rotate(-3deg)}
+.cover-stack[data-front="front"] .cv-back,.cover-stack[data-front="back"] .cv-front{left:38%;top:26%;z-index:1;transform:rotate(5deg);opacity:.92}
+.cover-stack .cv:hover{opacity:1}
+.cover-stack .cv:focus-visible{outline:2px solid var(--gold,#c8891a);outline-offset:4px}
+@media (prefers-reduced-motion:reduce){.cover-stack .cv{transition:none}}
+
+.bookhero .booktext{text-align:left}
+.bookhero .btns{justify-content:flex-start}
+.bk-title{white-space:nowrap}
+.bk-title .bk-sub{display:block;margin-top:.35em;font-size:.55em;letter-spacing:.06em}
+@media (max-width:480px){.bk-title{white-space:normal}}
+.bk-title{font-size:clamp(1.5rem,2.9vw,2.4rem)}
+@media (max-width:760px){.bk-title{font-size:clamp(1.5rem,7vw,2.2rem)}}
+/* Book page: fit in one screen on desktop */
+@media (min-width:901px){
+  .bookhero{padding:20px 0 24px;min-height:calc(100vh - 100px);display:flex;align-items:center}
+  .bookhero .wrap{width:100%}
+  .bookhero .two-col{grid-template-columns:1.05fr 1fr;gap:20px}
+  .bookhero h2{font-size:1.4rem;margin:.6em 0 .2em}
+  .bookhero p{margin-bottom:.7em}
+  .bookhero .spec{grid-template-columns:1fr 1fr;margin:.5em 0 .9em}
+  .bookhero .spec>div{grid-template-columns:1fr;gap:2px;padding:8px 14px;border-right:1px solid var(--line)}
+  .bookhero .spec>div:nth-child(2n){border-right:0}
+  .bookhero .spec>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .bookhero .spec dd{min-height:1.2em;font-size:1.05rem}
+  .bookhero .cover-stack{max-width:min(440px,calc((100vh - 140px)*.85));margin:0 0 0 auto;transform:translateX(28px)}
+}
+@media (min-width:901px){
+  .block.bookhero{padding:16px 0;min-height:calc(100vh - 102px)}
+  .bookhero .cover-stack{max-width:min(440px,calc((100vh - 190px)/1.2))}
+  .bookhero .booktext .eyebrow{margin-bottom:4px}
+  .bookhero .spec>div{padding:6px 14px}
+}
+/* Home hero: cream instead of indigo */
+.hero-split{background:var(--cream);color:var(--ink,#2a2540)}
+.hero-split .hero-copy h1{color:var(--indigo)}
+.hero-split .hero-sub{color:var(--gold-deep)}
+.hero-split .hero-tag{color:var(--indigo)}
+.hero-split .hero-line{color:var(--gold-deep)}
+.hero-split .hero-copy .btn.ghost{color:var(--indigo);border-color:var(--gold)}
+.hero-split .hero-copy .btn.ghost:hover{background:var(--gold);color:#fff}
+.hero-split .hero-art img{box-shadow:0 14px 34px rgba(28,23,64,.22)}
+.hero-split{background:var(--cream-2)}
+/* Mobile header: brand and Menu on one line, Menu on the right */
+@media (max-width:860px){
+  .site-header .wrap{flex-wrap:wrap;justify-content:space-between;align-items:center}
+  .brand{white-space:nowrap;min-width:0}
+  .menu-btn{margin-left:auto;flex-shrink:0;white-space:nowrap}
+  .nav{flex-basis:100%}
+}
+@media (max-width:480px){
+  .brand{font-size:.9rem;letter-spacing:.04em;gap:8px}
+  .brand img{width:32px;height:32px}
+  .menu-btn{padding:6px 12px}
+}
+/* Book page on phones/tablets: covers first, then text */
+@media (max-width:900px){
+  .block.bookhero{padding:28px 0 40px}
+  .bookhero .two-col{gap:32px}
+  .bookhero .cover-stack{order:-1;max-width:340px;margin:0 auto;transform:none}
+  .bookhero .booktext{text-align:left}
+}
+@media (max-width:900px){.bookhero .cover-stack{max-width:310px}}
+@media (max-width:900px){.block.bookhero{padding-top:52px}}
