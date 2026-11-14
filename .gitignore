@@ -1,2 +1,8 @@
 .DS_Store
 review/
+.env
+.env.*
+!.env.example
+*.swp
+node_modules/
+uploads-tmp/

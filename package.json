@@ -1,0 +1,36 @@
+{
+  "name": "consciousness-calling-website",
+  "version": "1.0.0",
+  "description": "Consciousness Calling author website with admin",
+  "main": "server/index.js",
+  "scripts": {
+    "test": "NODE_ENV=test node --test tests/*.test.js",
+    "start": "node server/index.js",
+    "dev": "USE_MEMORY_DB=true PORT=3000 node server/index.js",
+    "create-admin": "node scripts/create-admin.js",
+    "upload-site-images": "node scripts/upload-site-images.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parth-storymirror/conciousness_calling_demo.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/parth-storymirror/conciousness_calling_demo/issues"
+  },
+  "homepage": "https://github.com/parth-storymirror/conciousness_calling_demo#readme",
+  "private": "true",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1167.0",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.4",
+    "helmet": "^8.3.0",
+    "multer": "^2.5.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "pg-mem": "^3.0.14",
+    "sharp": "^0.35.5"
+  }
+}
