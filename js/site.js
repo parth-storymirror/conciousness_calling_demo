@@ -8,6 +8,7 @@
     ["light-code.html", "Light Code"],
     ["my-writing.html", "My Writings"],
     ["faqs.html", "FAQs"],
+    ["downloads.html", "Downloads"],
     ["connect.html", "Connect"]
   ];
   var here = location.pathname.split("/").pop() || "index.html";
@@ -20,7 +21,6 @@
   }).join("");
 
   var header =
-    '<div class="preview-bar">Layout preview for author review — not the final website. Copy and artwork are pending author approval.</div>' +
     '<header class="site-header"><div class="wrap">' +
     '<a class="brand" href="index.html"><img src="assets/img/img-02-emblem-transparent.png" alt="Heart Awakening emblem"><span>CONSCIOUSNESS CALLING</span></a>' +
     '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
@@ -62,7 +62,8 @@
     '<li><a href="inner-sun.html">Inner Sun</a></li>' +
     '<li><a href="light-code.html">Light Code</a></li>' +
     '<li><a href="my-writing.html">My Writings</a></li>' +
-    '<li><a href="faqs.html">FAQs</a></li></ul></div>' +
+    '<li><a href="faqs.html">FAQs</a></li>' +
+    '<li><a href="downloads.html">Downloads</a></li></ul></div>' +
     '<div><h4>About</h4><ul>' +
     '<li><a href="about.html">About the Author</a></li>' +
     '<li><a href="vision.html">The Consciousness Calling Vision</a></li>' +

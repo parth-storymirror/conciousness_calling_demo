@@ -4,7 +4,7 @@ const express = require("express");
 const multer = require("multer");
 const rateLimit = require("express-rate-limit");
 const auth = require("../auth");
-const { HttpError, bad, str, normalizeEmail, validateBlock, classifyUpload, normalizeBanner, validateBanner } = require("../validate");
+const { HttpError, bad, str, normalizeEmail, validateBlock, classifyUpload, normalizeBanner, validateBanner, normalizeDownloads, validateDownloads } = require("../validate");
 
 const MAX_IMAGE = 8 * 1024 * 1024;
 const MAX_FILE = 25 * 1024 * 1024;
@@ -183,6 +183,8 @@ function createAdminRouter({ cfg, data, storage, campaigns }) {
       if (banner.items.some((i) => i.fileId === id)) throw new HttpError(409, "This file is used by the top banner. Change the banner first.");
       const blocks = await data.writings.list();
       if (blocks.some((b) => b.type === "image" && b.data.fileId === id)) throw new HttpError(409, "This image is used in My Writings. Remove it there first.");
+      const downloads = normalizeDownloads(await data.settings.get("downloads", {}));
+      if (downloads.rows.some((row) => row.fileId === id)) throw new HttpError(409, "This file is used on the Downloads page. Change it there first.");
       await storage.remove(f.key);
       await data.files.remove(id);
       res.json({ ok: true });
@@ -199,6 +201,19 @@ function createAdminRouter({ cfg, data, storage, campaigns }) {
       const value = await validateBanner(req.body, (id) => data.files.byId(id));
       await data.settings.set("banner", value);
       res.json({ banner: value });
+    } catch (e) { next(e); }
+  });
+
+  // ---- Downloads page (free sample books table) -----------------------------------------------
+  r.get("/downloads", requireAuth, async (req, res, next) => {
+    try { res.json({ downloads: normalizeDownloads(await data.settings.get("downloads", {})) }); } catch (e) { next(e); }
+  });
+
+  r.put("/downloads", requireAuth, async (req, res, next) => {
+    try {
+      const value = validateDownloads(req.body);
+      await data.settings.set("downloads", value);
+      res.json({ downloads: value });
     } catch (e) { next(e); }
   });
 

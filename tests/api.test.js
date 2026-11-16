@@ -86,7 +86,7 @@ test("admin requires sign-in, hides behind noindex, and enforces CSRF", async ()
     const page = await c.call("GET", `${ADMIN}/`);
     assert.equal(page.status, 200);
     assert.match(page.headers.get("x-robots-tag"), /noindex/);
-    for (const [m, u] of [["GET", "/subscribers"], ["GET", "/files"], ["GET", "/banner"], ["GET", "/writings"], ["GET", "/campaigns"], ["GET", "/status"], ["PUT", "/banner"], ["POST", "/campaigns/send"]]) {
+    for (const [m, u] of [["GET", "/subscribers"], ["GET", "/files"], ["GET", "/banner"], ["GET", "/downloads"], ["GET", "/writings"], ["GET", "/campaigns"], ["GET", "/status"], ["PUT", "/banner"], ["POST", "/campaigns/send"]]) {
       const r = await c.admin(m, u, m === "GET" ? undefined : {});
       assert.equal(r.status, 401, `${m} ${u} should need sign-in`);
     }
@@ -268,6 +268,26 @@ test("banner: an older single-message save is shown and converted", async () => 
   } finally { await s.close(); }
 });
 
+test("downloads: a standalone free sample books table", async () => {
+  const s = await start();
+  try {
+    const pub = client(s.base);
+    assert.deepEqual((await pub.call("GET", "/api/downloads")).json, { title: "", rows: [] }, "empty by default");
+    const a = client(s.base); await a.login();
+    assert.equal((await pub.call("GET", `${ADMIN}/api/downloads`)).status, 401, "unauthenticated reads are refused");
+    assert.equal((await a.admin("PUT", "/downloads", { rows: [{ name: "", url: "https://example.com/x.pdf" }] })).status, 400, "every sample needs a title");
+    assert.equal((await a.admin("PUT", "/downloads", { rows: [{ name: "X", url: "javascript:alert(1)" }] })).status, 400);
+    const put = await a.admin("PUT", "/downloads", { title: "Free Sample Books", rows: [
+      { name: "Book A", url: "https://example.com/a.pdf" },
+      { name: "", url: "" },
+    ] });
+    assert.equal(put.status, 200);
+    assert.equal(put.json.downloads.rows.length, 1, "empty rows are dropped");
+    const view = (await pub.call("GET", "/api/downloads")).json;
+    assert.deepEqual(view, { title: "Free Sample Books", rows: [{ name: "Book A", url: "https://example.com/a.pdf", fileId: null }] });
+  } finally { await s.close(); }
+});
+
 test("uploads: type checks, image sniffing, size limits", async () => {
   const s = await start();
   try {
@@ -299,11 +319,7 @@ test("My Writings: defaults, add/edit/reorder/delete blocks, table editing, vali
     const text = await a.admin("POST", "/writings", { type: "text", data: { text: "Para one\n\nPara two" } });
     const table = await a.admin("POST", "/writings", { type: "table", data: { title: "T", headers: ["A", "B"], rows: [["1", "2"], ["3"]] } });
     assert.deepEqual(table.json.block.data.rows[1], ["3", ""], "short rows are padded");
-    const samples = await a.admin("POST", "/writings", { type: "samples", data: { title: "Free", rows: [{ name: "Book A", url: "https://example.com/a.pdf" }, { name: "", url: "" }] } });
-    assert.equal(samples.status, 201);
-    assert.equal(samples.json.block.data.rows.length, 1, "empty rows are dropped");
-    assert.equal((await a.admin("POST", "/writings", { type: "samples", data: { rows: [{ name: "X", url: "javascript:alert(1)" }] } })).status, 400);
-    assert.equal((await a.admin("POST", "/writings", { type: "samples", data: { rows: [] } })).status, 400);
+    assert.equal((await a.admin("POST", "/writings", { type: "samples", data: { rows: [{ name: "X" }] } })).status, 400, "samples is no longer a My Writings block type");
     assert.equal((await a.admin("POST", "/writings", { type: "script", data: {} })).status, 400);
     assert.equal((await a.admin("POST", "/writings", { type: "text", data: { text: "   " } })).status, 400);
     assert.equal((await a.admin("POST", "/writings", { type: "image", data: { url: "javascript:alert(1)" } })).status, 400);

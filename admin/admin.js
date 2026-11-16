@@ -85,6 +85,7 @@
     { id: "email", label: "Send email", render: viewEmail },
     { id: "banner", label: "Top banner", render: viewBanner },
     { id: "writings", label: "My Writings", render: viewWritings },
+    { id: "downloads", label: "Downloads", render: viewDownloads },
     { id: "account", label: "Account", render: viewAccount },
   ];
 
@@ -411,13 +412,76 @@
   }
 
   // =====================================================================================================
+  // Downloads page: a single Free Sample Books table (its own page and nav link, not a My Writings block)
+  // =====================================================================================================
+  function viewDownloads(main) {
+    var data = { title: "My Resources", rows: [] };
+
+    function blankRow() { return { name: "", url: "", fileId: null }; }
+
+    function load() {
+      return api("GET", "/downloads").then(function (r) {
+        data.title = r.downloads.title || "My Resources";
+        data.rows = r.downloads.rows.length ? r.downloads.rows : [blankRow()];
+        draw();
+      }).catch(fail);
+    }
+
+    var box = h("div");
+
+    function draw() {
+      clear(box);
+      var stt = h("input", { type: "text", maxlength: "200", value: data.title, placeholder: "Heading above the table" });
+      stt.addEventListener("input", function () { data.title = stt.value; });
+      var host = h("div");
+
+      function drawRows() {
+        clear(host);
+        var body = data.rows.map(function (row, i) {
+          function inp(key, max, ph) { var el = h("input", { type: "text", maxlength: String(max), value: row[key] || "", placeholder: ph, "aria-label": ph }); el.addEventListener("input", function () { row[key] = el.value; }); return el; }
+          var file = h("input", { type: "file", accept: ".pdf,.epub,.doc,.docx,.zip,.txt" });
+          var link = inp("url", 1000, "https://… or upload a file");
+          var up = h("button", { class: "btn ghost small", type: "button", text: "Upload file", onclick: function () {
+            if (!file.files[0]) { toast("Choose a file first.", true); return; }
+            var fd = new FormData(); fd.append("kind", "file"); fd.append("file", file.files[0]);
+            up.disabled = true; up.textContent = "Uploading…";
+            api("POST", "/files", fd).then(function (res) { row.url = res.file.url; row.fileId = res.file.id; toast("Uploaded. Save to keep it."); drawRows(); })
+              .catch(fail).then(function () { up.disabled = false; up.textContent = "Upload file"; });
+          } });
+          return h("tr", null, h("td", null, inp("name", 200, "Book title")),
+            h("td", null, link, h("div", { class: "row", style: "margin-top:4px" }, file, up)),
+            h("td", null, h("button", { class: "btn danger small", type: "button", text: "Remove", onclick: function () { data.rows.splice(i, 1); if (!data.rows.length) data.rows.push(blankRow()); drawRows(); } })));
+        });
+        host.appendChild(h("div", { class: "tbl-editor" }, h("table", { style: "min-width:560px" }, h("thead", null, h("tr", null, ["Book title", "Sample link (web address or uploaded file)", ""].map(function (t) { return h("th", { text: t }); }))), h("tbody", null, body))));
+        host.appendChild(h("div", { class: "row", style: "margin-top:8px" }, h("button", { class: "btn ghost small", type: "button", text: "Add a sample book", disabled: data.rows.length >= 100, onclick: function () { data.rows.push(blankRow()); drawRows(); } })));
+      }
+      drawRows();
+
+      box.appendChild(h("div", { class: "card" },
+        h("label", { class: "f", text: "Table heading" }), stt, host,
+        h("p", { class: "hint", text: "Each row shows a \"Read free sample\" button. Paste a web address, or upload a PDF/EPUB (stored in the CDN bucket)." }),
+        h("div", { style: "margin-top:16px" }, h("button", { class: "btn", type: "button", text: "Save Downloads page", onclick: function () {
+          api("PUT", "/downloads", { title: data.title, rows: data.rows }).then(function (r) {
+            data.title = r.downloads.title; data.rows = r.downloads.rows.length ? r.downloads.rows : [blankRow()];
+            toast("Saved."); draw();
+          }).catch(fail);
+        } }))));
+    }
+
+    main.appendChild(h("h1", { text: "Downloads" }));
+    main.appendChild(h("p", { class: "hint" }, "A free sample books table on its own \"Downloads\" page, linked in the main menu after FAQs. ",
+      h("a", { href: "/downloads.html", target: "_blank", rel: "noopener", text: "View the page" }), "."));
+    main.appendChild(box);
+    load();
+  }
+
+  // =====================================================================================================
   // My Writings: block editor (title, body text, image, table)
   // =====================================================================================================
-  var TYPE_LABEL = { title: "Title", text: "Body text", image: "Image", table: "Table", samples: "Free sample books" };
+  var TYPE_LABEL = { title: "Title", text: "Body text", image: "Image", table: "Table" };
 
   function newDraft(type) {
     var d = { title: { text: "", subtitle: "" }, text: { text: "" }, image: { url: "", alt: "", caption: "", size: "medium", fileId: null },
-      samples: { title: "Free Sample Books", rows: [{ name: "", url: "", fileId: null }] },
       table: { title: "", headers: ["Column 1", "Column 2"], rows: [["", ""]], firstColumnBold: true } }[type];
     return { id: null, type: type, data: JSON.parse(JSON.stringify(d)) };
   }
@@ -469,34 +533,6 @@
         return h("div", null, prev, h("div", { class: "row" }, file, up), h("p", { class: "hint", text: "PNG, JPG, WEBP or GIF, up to 8 MB. Stored in the CDN bucket." }),
           h("label", { class: "f", text: "Description (alt text)" }), alt, h("label", { class: "f", text: "Caption" }), cap,
           h("label", { class: "f", text: "Size" }), h("div", { style: "max-width:200px" }, size));
-      }
-      if (block.type === "samples") {
-        var sh = h("div");
-        var stt = h("input", { type: "text", maxlength: "200", value: d.title, placeholder: "Heading above the table (optional)" });
-        stt.addEventListener("input", function () { d.title = stt.value; });
-        function drawSamples() {
-          clear(sh);
-          var body = d.rows.map(function (row, r) {
-            function inp(key, max, ph) { var i = h("input", { type: "text", maxlength: String(max), value: row[key] || "", placeholder: ph, "aria-label": ph }); i.addEventListener("input", function () { row[key] = i.value; }); return i; }
-            var file = h("input", { type: "file", accept: ".pdf,.epub,.doc,.docx,.zip,.txt" });
-            var link = inp("url", 1000, "https://… or upload a file");
-            var up = h("button", { class: "btn ghost small", type: "button", text: "Upload file", onclick: function () {
-              if (!file.files[0]) { toast("Choose a file first.", true); return; }
-              var fd = new FormData(); fd.append("kind", "file"); fd.append("file", file.files[0]);
-              up.disabled = true; up.textContent = "Uploading…";
-              api("POST", "/files", fd).then(function (res) { row.url = res.file.url; row.fileId = res.file.id; toast("Uploaded. Save the block to keep it."); drawSamples(); })
-                .catch(fail).then(function () { up.disabled = false; up.textContent = "Upload file"; });
-            } });
-            return h("tr", null, h("td", null, inp("name", 200, "Book title")), 
-              h("td", null, link, h("div", { class: "row", style: "margin-top:4px" }, file, up)),
-              h("td", null, h("button", { class: "btn danger small", type: "button", text: "Remove", onclick: function () { d.rows.splice(r, 1); drawSamples(); } })));
-          });
-          sh.appendChild(h("div", { class: "tbl-editor" }, h("table", { style: "min-width:560px" }, h("thead", null, h("tr", null, ["Book title", "Sample link (web address or uploaded file)", ""].map(function (t) { return h("th", { text: t }); }))), h("tbody", null, body))));
-          sh.appendChild(h("div", { class: "row", style: "margin-top:8px" }, h("button", { class: "btn ghost small", type: "button", text: "Add a sample book", disabled: d.rows.length >= 100, onclick: function () { d.rows.push({ name: "", url: "", fileId: null }); drawSamples(); } })));
-        }
-        drawSamples();
-        return h("div", null, h("label", { class: "f", text: "Table heading" }), stt, sh,
-          h("p", { class: "hint", text: "Each row shows a \"Read free sample\" button. Paste a web address, or upload a PDF/EPUB (stored in the CDN bucket)." }));
       }
       // table
       var host = h("div", { class: "tbl-editor" });
@@ -553,7 +589,7 @@
       });
     }
 
-    var addBar = h("div", { class: "addbar" }, ["title", "text", "image", "table", "samples"].map(function (t) {
+    var addBar = h("div", { class: "addbar" }, ["title", "text", "image", "table"].map(function (t) {
       return h("button", { class: "btn ghost", type: "button", text: "+ " + TYPE_LABEL[t], onclick: function () { blocks.push(newDraft(t)); draw(); window.scrollTo(0, document.body.scrollHeight); } });
     }));
 

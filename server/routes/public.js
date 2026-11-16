@@ -1,7 +1,7 @@
 // Public API used by the website. None of these routes send email.
 const express = require("express");
 const rateLimit = require("express-rate-limit");
-const { normalizeEmail, str, HttpError, normalizeBanner } = require("../validate");
+const { normalizeEmail, str, HttpError, normalizeBanner, normalizeDownloads } = require("../validate");
 
 function createPublicRouter({ data, cfg }) {
   const r = express.Router();
@@ -56,6 +56,13 @@ function createPublicRouter({ data, cfg }) {
       res.set("Cache-Control", "no-cache");
       const blocks = await data.writings.list();
       res.json({ blocks: blocks.map((b) => ({ id: b.id, type: b.type, data: b.data })) });
+    } catch (e) { next(e); }
+  });
+
+  r.get("/api/downloads", async (req, res, next) => {
+    try {
+      res.set("Cache-Control", "no-cache");
+      res.json(normalizeDownloads(await data.settings.get("downloads", null)));
     } catch (e) { next(e); }
   });
 

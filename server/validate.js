@@ -35,7 +35,7 @@ function safeUrl(v, { allowRelative = false } = {}) {
 }
 
 // ---- writing blocks -----------------------------------------------------------
-const BLOCK_TYPES = ["title", "text", "image", "table", "samples"];
+const BLOCK_TYPES = ["title", "text", "image", "table"];
 const IMAGE_SIZES = ["small", "medium", "large"];
 
 function validateBlock(type, data) {
@@ -52,18 +52,6 @@ function validateBlock(type, data) {
     if (!url) throw bad("Upload an image first.");
     const size = IMAGE_SIZES.includes(d.size) ? d.size : "medium";
     return { url, alt: str(d.alt, 300), caption: str(d.caption, 300), size, fileId: Number.isInteger(d.fileId) ? d.fileId : null };
-  }
-  if (type === "samples") {
-    const rows = (Array.isArray(d.rows) ? d.rows : []).slice(0, 100).map((r) => {
-      r = r && typeof r === "object" ? r : {};
-      const name = str(r.name, 200);
-      const url = r.url ? safeUrl(r.url, { allowRelative: true }) : "";
-      if (r.url && !url) throw bad("A sample link is not a valid address.");
-      return { name, url: url || "", fileId: Number.isInteger(r.fileId) ? r.fileId : null };
-    }).filter((r) => r.name || r.url);
-    if (!rows.length) throw bad("Add at least one sample book.");
-    if (rows.some((r) => !r.name)) throw bad("Every sample needs a book title.");
-    return { title: str(d.title, 200), rows };
   }
   // table
   const headers = Array.isArray(d.headers) ? d.headers.slice(0, 8).map((h) => str(h, 120)) : [];
@@ -160,4 +148,34 @@ async function validateBanner(body, findFile) {
   return { enabled, speed: BANNER_SPEEDS.includes(b.speed) ? b.speed : "normal", items };
 }
 
-module.exports = { normalizeBanner, validateBanner, HttpError, bad, str, normalizeEmail, safeUrl, validateBlock, BLOCK_TYPES, classifyUpload, sniffImage };
+// ---- Downloads page (a single "free sample books" table) ------------------------------------------
+// Reads the stored value. Normalizing on read (not just on write) means older/partial data never
+// breaks the page.
+function normalizeDownloads(raw) {
+  const r = raw && typeof raw === "object" ? raw : {};
+  const rows = Array.isArray(r.rows) ? r.rows : [];
+  return {
+    title: String(r.title || ""),
+    rows: rows.map((row) => ({
+      name: String((row && row.name) || ""),
+      url: String((row && row.url) || ""),
+      fileId: row && Number.isInteger(row.fileId) ? row.fileId : null,
+    })),
+  };
+}
+
+// Validates what the admin sends.
+function validateDownloads(body) {
+  const b = body && typeof body === "object" ? body : {};
+  const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 100).map((r) => {
+    r = r && typeof r === "object" ? r : {};
+    const name = str(r.name, 200);
+    const url = r.url ? safeUrl(r.url, { allowRelative: true }) : "";
+    if (r.url && !url) throw bad("A sample link is not a valid address.");
+    return { name, url: url || "", fileId: Number.isInteger(r.fileId) ? r.fileId : null };
+  }).filter((r) => r.name || r.url);
+  if (rows.some((r) => !r.name)) throw bad("Every sample needs a book title.");
+  return { title: str(b.title, 200), rows };
+}
+
+module.exports = { normalizeBanner, validateBanner, normalizeDownloads, validateDownloads, HttpError, bad, str, normalizeEmail, safeUrl, validateBlock, BLOCK_TYPES, classifyUpload, sniffImage };
