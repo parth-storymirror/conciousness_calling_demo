@@ -216,8 +216,9 @@
         recipients = r.recipients;
         clear(previewBox);
         previewBox.appendChild(h("div", { class: "preview-box" },
+          r.logoUrl ? h("img", { class: "mail-logo", src: r.logoUrl, alt: "Logo", width: "64", height: "64" }) : null,
           h("h3", { text: subject.value }), paragraphsOf(body.value),
-          h("div", { class: "foot", text: "Consciousness Calling. You are receiving this because you asked for book updates. Unsubscribe" })));
+          h("div", { class: "foot", text: "You are receiving this because you subscribed. Unsubscribe" })));
         previewBox.appendChild(h("p", { class: "hint", text: "This message would go to " + r.recipients + " active subscriber" + (r.recipients === 1 ? "" : "s") + ". Preview only: nothing has been sent." }));
         sendBtn.textContent = "Send to " + r.recipients + " subscriber" + (r.recipients === 1 ? "" : "s");
         refreshSendState();

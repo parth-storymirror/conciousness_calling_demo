@@ -111,3 +111,5 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold
 .marquee-preview .track{align-items:center;gap:22px}
 .marquee-preview .chip-btn{border:1px solid #e8c471;border-radius:999px;padding:1px 11px;font-size:13px}
 .marquee-preview .dot{opacity:.6}
+
+.preview-box .mail-logo{display:block;margin:0 auto 14px;width:64px;height:64px}

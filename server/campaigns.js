@@ -24,7 +24,7 @@ function createCampaignService({ data, mailer, cfg, delayMs = 250 }) {
   async function preview({ subject, body }) {
     const counts = await data.subscribers.counts();
     const rendered = renderEmail({ subject, body, unsubscribeUrl: `${cfg.siteUrl || "https://example.invalid"}/unsubscribe?token=PREVIEW`, brand: brand(), logoUrl: logoUrl() });
-    return { recipients: counts.active, html: rendered.html, canSend: mailer.enabled() && mailer.configured() && !!cfg.siteUrl };
+    return { recipients: counts.active, html: rendered.html, logoUrl: logoUrl(), canSend: mailer.enabled() && mailer.configured() && !!cfg.siteUrl };
   }
 
   async function create({ subject, body, createdBy }) {
