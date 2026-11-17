@@ -951,3 +951,4 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
 /* Logo and name are larger than the menu links on tablets and phones too */
 @media (max-width:1240px){.brand{font-size:1.2rem}.brand img{width:44px;height:44px}}
 @media (max-width:480px){.brand{font-size:1rem}.brand img{width:38px;height:38px}}
+.about-hero .lightcode{margin-left:0;margin-right:0}
