@@ -937,3 +937,13 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
   .sampletable,.sampletable th,.sampletable td{width:auto!important}
   .sampletable td:last-child{text-align:left}
 }
+
+/* Header: one fluid row from 1241px up. Brand and links scale smoothly with the window width,
+   so they never overlap and nothing is hidden. */
+@media (min-width:1241px){
+  .site-header .wrap{gap:clamp(8px,1.2vw,24px)}
+  .brand{flex:0 1 auto;min-width:0;font-size:clamp(.78rem,.55vw + .35rem,1rem);letter-spacing:.04em;gap:8px}
+  .brand img{width:clamp(28px,2.4vw,38px);height:clamp(28px,2.4vw,38px)}
+  .nav{flex:0 1 auto;min-width:0;gap:clamp(0px,.3vw,6px)}
+  .nav a{padding:9px clamp(5px,.55vw,12px);font-size:clamp(10.5px,.5vw + 5px,13px);letter-spacing:clamp(.02em,.3vw - .02em,.07em)}
+}
