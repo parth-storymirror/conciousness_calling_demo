@@ -105,7 +105,7 @@
       }).then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (d) { return { ok: res.ok, d: d }; });
       }).then(function (r) {
-        if (r.ok) { msg.textContent = "Thank you. You will receive book updates."; f.reset(); }
+        if (r.ok) { msg.textContent = "Thank you for subscribing."; f.reset(); }
         else msg.textContent = r.d.error || "Something went wrong. Please try again.";
       }).catch(function () {
         msg.textContent = "Sign-up is not available right now. Please try again later.";

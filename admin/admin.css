@@ -112,4 +112,6 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold
 .marquee-preview .chip-btn{border:1px solid #e8c471;border-radius:999px;padding:1px 11px;font-size:13px}
 .marquee-preview .dot{opacity:.6}
 
-.preview-box .mail-logo{display:block;margin:0 auto 14px;width:64px;height:64px}
+.preview-box .mail-brand{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.preview-box .mail-brand img{width:48px;height:48px;display:block}
+.preview-box .mail-brand span{font-family:Georgia,serif;font-weight:700;font-size:17px;letter-spacing:1.5px;text-transform:uppercase;color:#1c1740}
