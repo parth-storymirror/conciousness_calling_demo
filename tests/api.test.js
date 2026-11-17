@@ -360,3 +360,24 @@ test("rate limiting protects the subscribe form", async () => {
     assert.ok(limited, "too many sign-ups from one address are throttled");
   } finally { await s.close(); }
 });
+
+test("search engines: public pages are indexable, the admin is not, and it is never advertised", async () => {
+  const s = await start();
+  try {
+    const robots = await fetch(`${s.base}/robots.txt`);
+    assert.equal(robots.status, 200);
+    const robotsText = await robots.text();
+    assert.match(robotsText, /Sitemap: .*\/sitemap\.xml/);
+    assert.ok(!robotsText.includes(ADMIN), "robots.txt must not reveal the hidden admin path");
+    const map = await (await fetch(`${s.base}/sitemap.xml`)).text();
+    assert.match(map, /<urlset/);
+    assert.ok(map.includes("/downloads.html") && map.includes("/faqs.html"));
+    assert.ok(!map.includes(ADMIN), "the sitemap must not list the admin");
+    for (const page of ["/index.html", "/about.html", "/downloads.html", "/faqs.html"]) {
+      const html = await (await fetch(`${s.base}${page}`)).text();
+      assert.ok(!/name="robots"[^>]*noindex/i.test(html), `${page} must not be marked noindex`);
+    }
+    const adminRes = await fetch(`${s.base}${ADMIN}/`);
+    assert.match(adminRes.headers.get("x-robots-tag") || "", /noindex/, "admin is kept out of search");
+  } finally { await s.close(); }
+});

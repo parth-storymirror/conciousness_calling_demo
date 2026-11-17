@@ -96,6 +96,23 @@ function createApp({ cfg, data, storage, campaigns }) {
     res.type(type).set("Cache-Control", "no-cache").send(body);
   };
 
+  // ---- search engines ---------------------------------------------------------------------------
+  // The public pages are open to search engines. The admin is NOT listed here on purpose (listing it
+  // would advertise the hidden path); it is kept out of search by its own noindex header and meta tag.
+  const SITEMAP_PAGES = ["", "about.html", "vision.html", "mission.html", "great-transition.html", "master-light.html",
+    "book.html", "explore.html", "inner-sun.html", "light-code.html", "my-writing.html", "faqs.html", "downloads.html", "connect.html"];
+  const siteOrigin = (req) => cfg.siteUrl || `${req.protocol}://${req.get("host")}`;
+  app.get("/robots.txt", (req, res) => {
+    res.type("text/plain").set("Cache-Control", "public, max-age=3600")
+      .send(`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /unsubscribe\n\nSitemap: ${siteOrigin(req)}/sitemap.xml\n`);
+  });
+  app.get("/sitemap.xml", (req, res) => {
+    const base = siteOrigin(req);
+    const urls = SITEMAP_PAGES.map((p) => `  <url><loc>${base}/${p}</loc></url>`).join("\n");
+    res.type("application/xml").set("Cache-Control", "public, max-age=3600")
+      .send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
+  });
+
   app.get("/", (req, res, next) => sendTransformed(path.join(ROOT, "index.html"), "html", res).catch(next));
   app.get(PAGE_RE, async (req, res, next) => {
     const file = path.join(ROOT, `${req.path.slice(1)}`);
