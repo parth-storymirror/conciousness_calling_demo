@@ -12,6 +12,7 @@ function createCampaignService({ data, mailer, cfg, delayMs = 250 }) {
   let running = false;
 
   const unsubscribeUrl = (token) => `${cfg.siteUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
+  const logoUrl = () => (cfg.bucket.canonicalUrl ? `${cfg.bucket.canonicalUrl}/${cfg.storagePrefix}/site/${cfg.siteImagesVersion ? cfg.siteImagesVersion + "/" : ""}img-02-emblem-transparent.png` : (cfg.siteUrl ? `${cfg.siteUrl}/assets/img/img-02-emblem-transparent.png` : ""));
   const brand = () => cfg.mail.fromName || "Consciousness Calling";
 
   function assertCanSend() {
@@ -22,7 +23,7 @@ function createCampaignService({ data, mailer, cfg, delayMs = 250 }) {
 
   async function preview({ subject, body }) {
     const counts = await data.subscribers.counts();
-    const rendered = renderEmail({ subject, body, unsubscribeUrl: `${cfg.siteUrl || "https://example.invalid"}/unsubscribe?token=PREVIEW`, brand: brand() });
+    const rendered = renderEmail({ subject, body, unsubscribeUrl: `${cfg.siteUrl || "https://example.invalid"}/unsubscribe?token=PREVIEW`, brand: brand(), logoUrl: logoUrl() });
     return { recipients: counts.active, html: rendered.html, canSend: mailer.enabled() && mailer.configured() && !!cfg.siteUrl };
   }
 
@@ -48,7 +49,7 @@ function createCampaignService({ data, mailer, cfg, delayMs = 250 }) {
             continue;
           }
           try {
-            const { html, text } = renderEmail({ subject: campaign.subject, body: campaign.body, unsubscribeUrl: unsubscribeUrl(r.token), brand: brand() });
+            const { html, text } = renderEmail({ subject: campaign.subject, body: campaign.body, unsubscribeUrl: unsubscribeUrl(r.token), brand: brand(), logoUrl: logoUrl() });
             await mailer.sendOne({ to: r.email, toName: r.name || r.email, subject: campaign.subject, html, text });
             await data.campaigns.markRecipient(r.id, "sent");
             consecutiveFailures = 0;

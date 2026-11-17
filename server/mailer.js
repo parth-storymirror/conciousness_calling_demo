@@ -48,16 +48,17 @@ function createFakeTransport() {
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-function renderEmail({ subject, body, unsubscribeUrl, brand }) {
+function renderEmail({ subject, body, unsubscribeUrl, brand, logoUrl }) {
+  const logo = logoUrl ? `<img src="${esc(logoUrl)}" alt="${esc(brand)}" width="64" height="64" style="display:block;margin:0 auto 18px;border:0">` : "";
   const paragraphs = String(body).trim().split(/\n{2,}/).map((p) => `<p style="margin:0 0 14px">${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
   const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#fffaf0;font-family:Arial,Helvetica,sans-serif;color:#2a2540;line-height:1.6">
 <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #ecdcb8;border-radius:10px;padding:28px">
-<h2 style="margin:0 0 18px;font-family:Georgia,serif;color:#1c1740">${esc(subject)}</h2>
+${logo}<h2 style="margin:0 0 18px;font-family:Georgia,serif;color:#1c1740">${esc(subject)}</h2>
 ${paragraphs}
 <hr style="border:none;border-top:1px solid #ecdcb8;margin:24px 0 12px">
-<p style="margin:0;font-size:12px;color:#6b6585">${esc(brand)}<br>You are receiving this because you asked for book updates. <a href="${esc(unsubscribeUrl)}" style="color:#8f5e0a">Unsubscribe</a></p>
+<p style="margin:0;font-size:12px;color:#6b6585">You are receiving this because you subscribed. <a href="${esc(unsubscribeUrl)}" style="color:#8f5e0a">Unsubscribe</a></p>
 </div></body></html>`;
-  const text = `${subject}\n\n${String(body).trim()}\n\n--\n${brand}\nUnsubscribe: ${unsubscribeUrl}`;
+  const text = `${subject}\n\n${String(body).trim()}\n\n--\nYou are receiving this because you subscribed.\nUnsubscribe: ${unsubscribeUrl}`;
   return { html, text };
 }
 
