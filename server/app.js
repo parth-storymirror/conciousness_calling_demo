@@ -113,6 +113,8 @@ function createApp({ cfg, data, storage, campaigns }) {
       .send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
   });
 
+  // The home page lives at "/": the old /index.html address redirects there permanently.
+  app.get("/index.html", (req, res) => res.redirect(301, "/"));
   app.get("/", (req, res, next) => sendTransformed(path.join(ROOT, "index.html"), "html", res).catch(next));
   app.get(PAGE_RE, async (req, res, next) => {
     const file = path.join(ROOT, `${req.path.slice(1)}`);

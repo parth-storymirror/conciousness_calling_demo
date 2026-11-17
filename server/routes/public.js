@@ -77,7 +77,7 @@ function createPublicRouter({ data, cfg }) {
       res.set("Cache-Control", "no-store");
       if (!s) return res.status(404).send(page("Link not found", "This unsubscribe link is not valid."));
       if (s.status !== "active") return res.send(page("Already unsubscribed", "You will not receive further updates."));
-      res.send(page("Unsubscribe", "Confirm that you no longer want to receive emails from us.", form(token)));
+      res.send(page("Unsubscribe", "Confirm that you no longer want to receive these emails.", form(token)));
     } catch (e) { next(e); }
   });
 
@@ -87,7 +87,7 @@ function createPublicRouter({ data, cfg }) {
       const s = token ? await data.subscribers.unsubscribeByToken(token) : null;
       res.set("Cache-Control", "no-store");
       if (!s) return res.status(404).send(page("Link not found", "This unsubscribe link is not valid."));
-      res.send(page("You are unsubscribed", "You will not receive any further emails."));
+      res.send(page("You are unsubscribed", "You will not receive further emails."));
     } catch (e) { next(e); }
   });
 

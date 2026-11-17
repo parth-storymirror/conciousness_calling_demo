@@ -381,3 +381,13 @@ test("search engines: public pages are indexable, the admin is not, and it is ne
     assert.match(adminRes.headers.get("x-robots-tag") || "", /noindex/, "admin is kept out of search");
   } finally { await s.close(); }
 });
+
+test("/index.html redirects permanently to the home page at /", async () => {
+  const s = await start();
+  try {
+    const res = await fetch(`${s.base}/index.html`, { redirect: "manual" });
+    assert.equal(res.status, 301);
+    assert.equal(res.headers.get("location"), "/");
+    assert.equal((await fetch(`${s.base}/`)).status, 200);
+  } finally { await s.close(); }
+});

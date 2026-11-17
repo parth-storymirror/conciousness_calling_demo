@@ -17,12 +17,12 @@
 
   var links = pages.map(function (p) {
     var cur = p[0] === here ? ' aria-current="page"' : "";
-    return '<a href="' + p[0] + '"' + cur + ">" + p[1] + "</a>";
+    return '<a href="' + (p[0] === "index.html" ? "/" : p[0]) + '"' + cur + ">" + p[1] + "</a>";
   }).join("");
 
   var header =
     '<header class="site-header"><div class="wrap">' +
-    '<a class="brand" href="index.html"><img src="assets/img/img-02-emblem-transparent.png" alt="Heart Awakening emblem"><span>CONSCIOUSNESS CALLING</span></a>' +
+    '<a class="brand" href="/"><img src="assets/img/img-02-emblem-transparent.png" alt="Heart Awakening emblem"><span>CONSCIOUSNESS CALLING</span></a>' +
     '<button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></button>' +
     '<nav class="nav" id="nav" aria-label="Main">' + links + "</nav>" +
     "</div></header>";
@@ -53,10 +53,10 @@
   var footer =
     '<footer class="site-footer"><div class="wrap">' +
     '<div class="foot-grid">' +
-    '<div><a class="foot-brand" href="index.html"><img src="assets/img/img-02-emblem-transparent.png" alt=""><span>CONSCIOUSNESS CALLING</span></a>' +
+    '<div><a class="foot-brand" href="/"><img src="assets/img/img-02-emblem-transparent.png" alt=""><span>CONSCIOUSNESS CALLING</span></a>' +
     '<p class="foot-line">One Heart. One Consciousness. One Living Field.</p></div>' +
     '<div><h4>Explore</h4><ul>' +
-    '<li><a href="index.html">Home</a></li>' +
+    '<li><a href="/">Home</a></li>' +
     '<li><a href="book.html">Book One</a></li>' +
     '<li><a href="explore.html">Explore Consciousness Calling</a></li>' +
     '<li><a href="inner-sun.html">Inner Sun</a></li>' +
