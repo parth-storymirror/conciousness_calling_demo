@@ -5,7 +5,7 @@
     ["book.html", "Book One"],
     ["explore.html", "Explore Consciousness Calling"],
     ["inner-sun.html", "Inner Sun"],
-    ["light-code.html", "Light Code"],
+    ["light-code.html", "Light Codes"],
     ["my-writing.html", "My Writings"],
     ["faqs.html", "FAQs"],
     ["downloads.html", "Downloads"],
@@ -60,7 +60,7 @@
     '<li><a href="book.html">Book One</a></li>' +
     '<li><a href="explore.html">Explore Consciousness Calling</a></li>' +
     '<li><a href="inner-sun.html">Inner Sun</a></li>' +
-    '<li><a href="light-code.html">Light Code</a></li>' +
+    '<li><a href="light-code.html">Light Codes</a></li>' +
     '<li><a href="my-writing.html">My Writings</a></li>' +
     '<li><a href="faqs.html">FAQs</a></li>' +
     '<li><a href="downloads.html">Downloads</a></li></ul></div>' +

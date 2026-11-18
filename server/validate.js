@@ -148,14 +148,21 @@ async function validateBanner(body, findFile) {
   return { enabled, speed: BANNER_SPEEDS.includes(b.speed) ? b.speed : "normal", items };
 }
 
-// ---- Downloads page (a single "free sample books" table) ------------------------------------------
-// Reads the stored value. Normalizing on read (not just on write) means older/partial data never
-// breaks the page.
-function normalizeDownloads(raw) {
-  const r = raw && typeof raw === "object" ? raw : {};
-  const rows = Array.isArray(r.rows) ? r.rows : [];
+// ---- Downloads page (one or more tables of downloadable items) ---------------------------------------
+// Stored as { tables: [{ title, nameHeader, linkHeader, buttonLabel, rows: [{ name, url, fileId }] }] }.
+// Normalizing on read (not just on write) means older/partial data never breaks the page; the first
+// version stored a single table as { title, rows }, which is converted to one table here.
+const DL_DEFAULTS = { nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample" };
+
+function normalizeTable(t) {
+  t = t && typeof t === "object" ? t : {};
+  const rows = Array.isArray(t.rows) ? t.rows : [];
+  const label = (v, d) => String(v || "").trim() || d;
   return {
-    title: String(r.title || ""),
+    title: String(t.title || ""),
+    nameHeader: label(t.nameHeader, DL_DEFAULTS.nameHeader),
+    linkHeader: label(t.linkHeader, DL_DEFAULTS.linkHeader),
+    buttonLabel: label(t.buttonLabel, DL_DEFAULTS.buttonLabel),
     rows: rows.map((row) => ({
       name: String((row && row.name) || ""),
       url: String((row && row.url) || ""),
@@ -164,18 +171,42 @@ function normalizeDownloads(raw) {
   };
 }
 
+function normalizeDownloads(raw) {
+  const r = raw && typeof raw === "object" ? raw : {};
+  if (Array.isArray(r.tables)) return { tables: r.tables.map(normalizeTable) };
+  if (Array.isArray(r.rows) && (r.rows.length || r.title)) return { tables: [normalizeTable(r)] };
+  return { tables: [] };
+}
+
+// Every uploaded file used by any table (so a file in use cannot be deleted).
+function downloadFileIds(raw) {
+  return normalizeDownloads(raw).tables.flatMap((t) => t.rows.map((r) => r.fileId)).filter((id) => id !== null);
+}
+
 // Validates what the admin sends.
 function validateDownloads(body) {
   const b = body && typeof body === "object" ? body : {};
-  const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 100).map((r) => {
-    r = r && typeof r === "object" ? r : {};
-    const name = str(r.name, 200);
-    const url = r.url ? safeUrl(r.url, { allowRelative: true }) : "";
-    if (r.url && !url) throw bad("A sample link is not a valid address.");
-    return { name, url: url || "", fileId: Number.isInteger(r.fileId) ? r.fileId : null };
-  }).filter((r) => r.name || r.url);
-  if (rows.some((r) => !r.name)) throw bad("Every sample needs a book title.");
-  return { title: str(b.title, 200), rows };
+  const input = Array.isArray(b.tables) ? b.tables : (Array.isArray(b.rows) ? [b] : []);
+  if (input.length > 20) throw bad("Too many tables (the limit is 20).");
+  const tables = input.map((t, n) => {
+    t = t && typeof t === "object" ? t : {};
+    const rows = (Array.isArray(t.rows) ? t.rows : []).slice(0, 100).map((r) => {
+      r = r && typeof r === "object" ? r : {};
+      const name = str(r.name, 200);
+      const url = r.url ? safeUrl(r.url, { allowRelative: true }) : "";
+      if (r.url && !url) throw bad("A link is not a valid address.");
+      return { name, url: url || "", fileId: Number.isInteger(r.fileId) ? r.fileId : null };
+    }).filter((r) => r.name || r.url);
+    if (rows.some((r) => !r.name)) throw bad(`Table ${n + 1}: every row needs a name.`);
+    return {
+      title: str(t.title, 200),
+      nameHeader: str(t.nameHeader, 60) || DL_DEFAULTS.nameHeader,
+      linkHeader: str(t.linkHeader, 60) || DL_DEFAULTS.linkHeader,
+      buttonLabel: str(t.buttonLabel, 60) || DL_DEFAULTS.buttonLabel,
+      rows,
+    };
+  });
+  return { tables };
 }
 
-module.exports = { normalizeBanner, validateBanner, normalizeDownloads, validateDownloads, HttpError, bad, str, normalizeEmail, safeUrl, validateBlock, BLOCK_TYPES, classifyUpload, sniffImage };
+module.exports = { normalizeBanner, validateBanner, normalizeDownloads, validateDownloads, downloadFileIds, HttpError, bad, str, normalizeEmail, safeUrl, validateBlock, BLOCK_TYPES, classifyUpload, sniffImage };

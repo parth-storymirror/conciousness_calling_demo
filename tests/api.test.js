@@ -268,23 +268,30 @@ test("banner: an older single-message save is shown and converted", async () => 
   } finally { await s.close(); }
 });
 
-test("downloads: a standalone free sample books table", async () => {
+test("downloads: several tables with their own headings, columns and button text", async () => {
   const s = await start();
   try {
     const pub = client(s.base);
-    assert.deepEqual((await pub.call("GET", "/api/downloads")).json, { title: "", rows: [] }, "empty by default");
+    assert.deepEqual((await pub.call("GET", "/api/downloads")).json, { tables: [] }, "empty by default");
     const a = client(s.base); await a.login();
     assert.equal((await pub.call("GET", `${ADMIN}/api/downloads`)).status, 401, "unauthenticated reads are refused");
-    assert.equal((await a.admin("PUT", "/downloads", { rows: [{ name: "", url: "https://example.com/x.pdf" }] })).status, 400, "every sample needs a title");
-    assert.equal((await a.admin("PUT", "/downloads", { rows: [{ name: "X", url: "javascript:alert(1)" }] })).status, 400);
-    const put = await a.admin("PUT", "/downloads", { title: "Free Sample Books", rows: [
-      { name: "Book A", url: "https://example.com/a.pdf" },
-      { name: "", url: "" },
+    assert.equal((await a.admin("PUT", "/downloads", { tables: [{ rows: [{ name: "", url: "https://example.com/x.pdf" }] }] })).status, 400, "every row needs a name");
+    assert.equal((await a.admin("PUT", "/downloads", { tables: [{ rows: [{ name: "X", url: "javascript:alert(1)" }] }] })).status, 400);
+    const put = await a.admin("PUT", "/downloads", { tables: [
+      { title: "Free Sample Books", rows: [{ name: "Book A", url: "https://example.com/a.pdf" }, { name: "", url: "" }] },
+      { title: "Guides", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf" }] },
     ] });
     assert.equal(put.status, 200);
-    assert.equal(put.json.downloads.rows.length, 1, "empty rows are dropped");
+    assert.equal(put.json.downloads.tables[0].rows.length, 1, "empty rows are dropped");
     const view = (await pub.call("GET", "/api/downloads")).json;
-    assert.deepEqual(view, { title: "Free Sample Books", rows: [{ name: "Book A", url: "https://example.com/a.pdf", fileId: null }] });
+    assert.deepEqual(view.tables[0], { title: "Free Sample Books", nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample", rows: [{ name: "Book A", url: "https://example.com/a.pdf", fileId: null }] }, "blank labels fall back to the defaults");
+    assert.deepEqual(view.tables[1], { title: "Guides", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf", fileId: null }] });
+    // data saved by the first version (one table as { title, rows }) still shows up
+    await s.data.settings.set("downloads", { title: "My Resources", rows: [{ name: "Old", url: "https://example.com/o.pdf" }] });
+    const legacy = (await pub.call("GET", "/api/downloads")).json;
+    assert.equal(legacy.tables.length, 1);
+    assert.equal(legacy.tables[0].title, "My Resources");
+    assert.equal(legacy.tables[0].buttonLabel, "Read free sample");
   } finally { await s.close(); }
 });
 
