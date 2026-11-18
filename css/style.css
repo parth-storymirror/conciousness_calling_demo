@@ -365,7 +365,7 @@ input:focus, textarea:focus, .btn:focus-visible, .nav a:focus-visible { outline:
 .hero-split .hero-sub { color: var(--gold-deep); }
 .hero-split .hero-tag { color: var(--indigo); }
 .hero-split .hero-line { color: var(--gold-deep); }
-.hero-split .hero-copy .btn.ghost { color: var(--indigo); border-color: var(--gold); }
+.hero-split .hero-copy .btn.ghost { color: var(--indigo); border-color: var(--gold); background: var(--cream-2); }
 .hero-split .hero-copy .btn.ghost:hover { background: var(--gold); color: #fff; }
 .hero-split .hero-art img { box-shadow: 0 14px 34px rgba(28,23,64,.22); }
 /* Mobile header: brand and Menu on one line, Menu on the right */
