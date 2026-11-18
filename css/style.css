@@ -957,5 +957,5 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
 .movement i{font-style:normal;color:var(--gold-deep);margin:0 .2em}
 
 /* Downloads: the Heart Awakening emblem under the list */
-.dl-emblem{width:min(280px,70vw);height:auto;margin:48px auto 0;display:block}
+.dl-emblem{width:min(200px,55vw);height:auto;margin:8px auto 28px;display:block}
 .dl-table + .dl-table{margin-top:40px}
