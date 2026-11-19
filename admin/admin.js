@@ -419,7 +419,7 @@
     var tables = [];
 
     function blankRow() { return { name: "", url: "", fileId: null }; }
-    function blankTable() { return { title: "", nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample", rows: [blankRow()] }; }
+    function blankTable() { return { title: "", description: "", nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample", rows: [blankRow()] }; }
     function fill(list) { tables = list.length ? list : [blankTable()]; tables.forEach(function (t) { if (!t.rows.length) t.rows.push(blankRow()); }); }
 
     function load() {
@@ -465,7 +465,8 @@
             if (!window.confirm("Remove this whole table? (Nothing changes on the website until you save.)")) return;
             tables.splice(n, 1); if (!tables.length) tables.push(blankTable()); draw();
           } })),
-        field("Table heading (shown above the table)", t, "title", 200, "e.g. Free Sample Books"),
+        field("Table heading (shown above the table)", t, "title", 200, "e.g. Book Preview"),
+        field("Short description under the heading (optional)", t, "description", 400, "e.g. Begin your journey from Mind to Heart with selected pages from the book."),
         h("div", { class: "grid3", style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px" },
           field("First column title", t, "nameHeader", 60, "Book"),
           field("Second column title", t, "linkHeader", 60, "Free sample"),

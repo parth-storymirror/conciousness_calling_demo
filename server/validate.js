@@ -149,7 +149,7 @@ async function validateBanner(body, findFile) {
 }
 
 // ---- Downloads page (one or more tables of downloadable items) ---------------------------------------
-// Stored as { tables: [{ title, nameHeader, linkHeader, buttonLabel, rows: [{ name, url, fileId }] }] }.
+// Stored as { tables: [{ title, description, nameHeader, linkHeader, buttonLabel, rows: [{ name, url, fileId }] }] }.
 // Normalizing on read (not just on write) means older/partial data never breaks the page; the first
 // version stored a single table as { title, rows }, which is converted to one table here.
 const DL_DEFAULTS = { nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample" };
@@ -160,6 +160,7 @@ function normalizeTable(t) {
   const label = (v, d) => String(v || "").trim() || d;
   return {
     title: String(t.title || ""),
+    description: String(t.description || ""),
     nameHeader: label(t.nameHeader, DL_DEFAULTS.nameHeader),
     linkHeader: label(t.linkHeader, DL_DEFAULTS.linkHeader),
     buttonLabel: label(t.buttonLabel, DL_DEFAULTS.buttonLabel),
@@ -200,6 +201,7 @@ function validateDownloads(body) {
     if (rows.some((r) => !r.name)) throw bad(`Table ${n + 1}: every row needs a name.`);
     return {
       title: str(t.title, 200),
+      description: str(t.description, 400),
       nameHeader: str(t.nameHeader, 60) || DL_DEFAULTS.nameHeader,
       linkHeader: str(t.linkHeader, 60) || DL_DEFAULTS.linkHeader,
       buttonLabel: str(t.buttonLabel, 60) || DL_DEFAULTS.buttonLabel,

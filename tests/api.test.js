@@ -279,13 +279,13 @@ test("downloads: several tables with their own headings, columns and button text
     assert.equal((await a.admin("PUT", "/downloads", { tables: [{ rows: [{ name: "X", url: "javascript:alert(1)" }] }] })).status, 400);
     const put = await a.admin("PUT", "/downloads", { tables: [
       { title: "Free Sample Books", rows: [{ name: "Book A", url: "https://example.com/a.pdf" }, { name: "", url: "" }] },
-      { title: "Guides", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf" }] },
+      { title: "Guides", description: "Short guides.", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf" }] },
     ] });
     assert.equal(put.status, 200);
     assert.equal(put.json.downloads.tables[0].rows.length, 1, "empty rows are dropped");
     const view = (await pub.call("GET", "/api/downloads")).json;
-    assert.deepEqual(view.tables[0], { title: "Free Sample Books", nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample", rows: [{ name: "Book A", url: "https://example.com/a.pdf", fileId: null }] }, "blank labels fall back to the defaults");
-    assert.deepEqual(view.tables[1], { title: "Guides", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf", fileId: null }] });
+    assert.deepEqual(view.tables[0], { title: "Free Sample Books", description: "", nameHeader: "Book", linkHeader: "Free sample", buttonLabel: "Read free sample", rows: [{ name: "Book A", url: "https://example.com/a.pdf", fileId: null }] }, "blank labels fall back to the defaults");
+    assert.deepEqual(view.tables[1], { title: "Guides", description: "Short guides.", nameHeader: "Guide", linkHeader: "PDF", buttonLabel: "Download", rows: [{ name: "Guide 1", url: "https://example.com/g.pdf", fileId: null }] });
     // data saved by the first version (one table as { title, rows }) still shows up
     await s.data.settings.set("downloads", { title: "My Resources", rows: [{ name: "Old", url: "https://example.com/o.pdf" }] });
     const legacy = (await pub.call("GET", "/api/downloads")).json;

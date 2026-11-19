@@ -16,6 +16,7 @@
   function renderTable(t) {
     var box = el("div", "dl-table");
     if (t.title) box.appendChild(el("h2", "", t.title));
+    if (t.description) box.appendChild(el("p", "dl-desc", t.description));
     var wrap = el("div", "doortable-wrap");
     var table = el("table", "doortable worktable sampletable");
     var head = el("tr");
