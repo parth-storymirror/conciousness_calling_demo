@@ -438,10 +438,10 @@
       var host = h("div");
       function drawRows() {
         clear(host);
-        var body = t.rows.map(function (row, i) {
+        var list = h("div", { class: "dl-rows" });
+        t.rows.forEach(function (row, i) {
           function inp(key, max, ph) { var el = h("input", { type: "text", maxlength: String(max), value: row[key] || "", placeholder: ph, "aria-label": ph }); el.addEventListener("input", function () { row[key] = el.value; }); return el; }
-          var file = h("input", { type: "file", accept: ".pdf,.epub,.doc,.docx,.zip,.txt" });
-          var link = inp("url", 1000, "https://… or upload a file");
+          var file = h("input", { type: "file", accept: ".pdf,.epub,.doc,.docx,.zip,.txt", class: "dl-file-input" });
           var up = h("button", { class: "btn ghost small", type: "button", text: "Upload file", onclick: function () {
             if (!file.files[0]) { toast("Choose a file first.", true); return; }
             var fd = new FormData(); fd.append("kind", "file"); fd.append("file", file.files[0]);
@@ -449,11 +449,13 @@
             api("POST", "/files", fd).then(function (res) { row.url = res.file.url; row.fileId = res.file.id; toast("Uploaded. Save to keep it."); drawRows(); })
               .catch(fail).then(function () { up.disabled = false; up.textContent = "Upload file"; });
           } });
-          return h("tr", null, h("td", null, inp("name", 200, t.nameHeader || "Name")),
-            h("td", null, link, h("div", { class: "row", style: "margin-top:4px" }, file, up)),
-            h("td", null, h("button", { class: "btn danger small", type: "button", text: "Remove", onclick: function () { t.rows.splice(i, 1); if (!t.rows.length) t.rows.push(blankRow()); drawRows(); } })));
+          list.appendChild(h("div", { class: "dl-row" },
+            h("div", { class: "dl-cell" }, h("label", { class: "dl-lab", text: t.nameHeader || "Name" }), inp("name", 200, "Title shown on the page")),
+            h("div", { class: "dl-cell" }, h("label", { class: "dl-lab", text: "Link (web address or uploaded file)" }), inp("url", 1000, "https://… or upload a file below"),
+              h("div", { class: "dl-upload" }, file, up)),
+            h("div", { class: "dl-actions" }, h("button", { class: "btn danger small", type: "button", text: "Remove", onclick: function () { t.rows.splice(i, 1); if (!t.rows.length) t.rows.push(blankRow()); drawRows(); } }))));
         });
-        host.appendChild(h("div", { class: "tbl-editor" }, h("table", { style: "min-width:560px" }, h("thead", null, h("tr", null, [(t.nameHeader || "Name"), "Link (web address or uploaded file)", ""].map(function (x) { return h("th", { text: x }); }))), h("tbody", null, body))));
+        host.appendChild(list);
         host.appendChild(h("div", { class: "row", style: "margin-top:8px" }, h("button", { class: "btn ghost small", type: "button", text: "Add a row", disabled: t.rows.length >= 100, onclick: function () { t.rows.push(blankRow()); drawRows(); } })));
       }
       drawRows();

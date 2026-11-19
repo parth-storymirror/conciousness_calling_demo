@@ -115,3 +115,14 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold
 .preview-box .mail-brand{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .preview-box .mail-brand img{width:48px;height:48px;display:block}
 .preview-box .mail-brand span{font-family:Georgia,serif;font-weight:700;font-size:17px;letter-spacing:1.5px;text-transform:uppercase;color:#1c1740}
+
+/* Downloads editor: one tidy card per row */
+.dl-rows{display:grid;gap:12px;margin-top:8px}
+.dl-row{display:grid;grid-template-columns:minmax(180px,1fr) minmax(260px,2fr) auto;gap:14px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--cream)}
+.dl-cell{min-width:0}
+.dl-lab{display:block;font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--gold-deep);margin:0 0 5px}
+.dl-upload{display:flex;align-items:center;gap:10px;margin-top:8px}
+.dl-upload .dl-file-input{flex:1;min-width:0;font-size:13px}
+.dl-upload .btn{flex:none;white-space:nowrap}
+.dl-actions{align-self:end;padding-bottom:2px}
+@media (max-width:760px){.dl-row{grid-template-columns:1fr}.dl-actions{align-self:start}}
