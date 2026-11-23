@@ -84,7 +84,7 @@
     { id: "subscribers", label: "Subscribers", render: viewSubscribers },
     { id: "email", label: "Send email", render: viewEmail },
     { id: "banner", label: "Top banner", render: viewBanner },
-    { id: "writings", label: "My Writings", render: viewWritings },
+    { id: "writings", label: "Future Writings", render: viewWritings },
     { id: "downloads", label: "Downloads", render: viewDownloads },
     { id: "account", label: "Account", render: viewAccount },
   ];
@@ -601,7 +601,7 @@
         head.appendChild(saveBtn);
         head.appendChild(h("button", { class: "btn danger small", type: "button", text: "Delete", onclick: function () {
           if (b.id === null) { blocks.splice(blocks.indexOf(b), 1); draw(); return; }
-          if (confirm("Delete this block from My Writings?")) api("DELETE", "/writings/" + b.id).then(function () { toast("Deleted."); load(); }).catch(fail);
+          if (confirm("Delete this block from Future Writings?")) api("DELETE", "/writings/" + b.id).then(function () { toast("Deleted."); load(); }).catch(fail);
         } }));
         list.appendChild(h("div", { class: "block" + (b.id === null ? " draft" : "") }, head, h("div", { class: "block-body" }, editorFor(b))));
       });
@@ -611,8 +611,8 @@
       return h("button", { class: "btn ghost", type: "button", text: "+ " + TYPE_LABEL[t], onclick: function () { blocks.push(newDraft(t)); draw(); window.scrollTo(0, document.body.scrollHeight); } });
     }));
 
-    main.appendChild(h("h1", { text: "My Writings" }));
-    main.appendChild(h("p", { class: "hint" }, "Everything on the My Writings page is built from the blocks below, in this order. Save each block after editing it. ",
+    main.appendChild(h("h1", { text: "Future Writings" }));
+    main.appendChild(h("p", { class: "hint" }, "Everything on the Future Writings page is built from the blocks below, in this order. Save each block after editing it. ",
       h("a", { href: "/my-writing.html", target: "_blank", rel: "noopener", text: "View the page" }), "."));
     main.appendChild(list);
     main.appendChild(h("h3", { text: "Add a block" }));

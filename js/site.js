@@ -6,13 +6,13 @@
     ["explore.html", "Explore Consciousness Calling"],
     ["inner-sun.html", "Inner Sun"],
     ["light-code.html", "Light Codes"],
-    ["my-writing.html", "My Writings"],
+    ["my-writing.html", "Future Writings"],
     ["faqs.html", "FAQs"],
     ["downloads.html", "Downloads"],
     ["connect.html", "Connect"]
   ];
   var here = location.pathname.split("/").pop() || "index.html";
-  var aboutPages = ["about.html", "vision.html", "mission.html", "great-transition.html", "master-light.html"];
+  var aboutPages = ["about.html", "ra-soul.html", "vision.html", "mission.html", "great-transition.html", "master-light.html"];
   if (aboutPages.indexOf(here) > -1) here = "about.html";
 
   var links = pages.map(function (p) {
@@ -34,6 +34,7 @@
   if (aboutPages.indexOf(cur) > -1) {
     var sub = [
       ["about.html", "About the Author"],
+      ["ra-soul.html", "RA SOUL"],
       ["vision.html", "The Consciousness Calling Vision"],
       ["mission.html", "Our Mission"],
       ["great-transition.html", "The Great Transition"],
@@ -61,11 +62,12 @@
     '<li><a href="explore.html">Explore Consciousness Calling</a></li>' +
     '<li><a href="inner-sun.html">Inner Sun</a></li>' +
     '<li><a href="light-code.html">Light Codes</a></li>' +
-    '<li><a href="my-writing.html">My Writings</a></li>' +
+    '<li><a href="my-writing.html">Future Writings</a></li>' +
     '<li><a href="faqs.html">FAQs</a></li>' +
     '<li><a href="downloads.html">Downloads</a></li></ul></div>' +
     '<div><h4>About</h4><ul>' +
     '<li><a href="about.html">About the Author</a></li>' +
+    '<li><a href="ra-soul.html">RA SOUL</a></li>' +
     '<li><a href="vision.html">The Consciousness Calling Vision</a></li>' +
     '<li><a href="mission.html">Our Mission</a></li>' +
     '<li><a href="great-transition.html">The Great Transition</a></li>' +

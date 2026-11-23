@@ -182,7 +182,7 @@ function createAdminRouter({ cfg, data, storage, campaigns }) {
       const banner = normalizeBanner(await data.settings.get("banner", {}));
       if (banner.items.some((i) => i.fileId === id)) throw new HttpError(409, "This file is used by the top banner. Change the banner first.");
       const blocks = await data.writings.list();
-      if (blocks.some((b) => b.type === "image" && b.data.fileId === id)) throw new HttpError(409, "This image is used in My Writings. Remove it there first.");
+      if (blocks.some((b) => b.type === "image" && b.data.fileId === id)) throw new HttpError(409, "This image is used in Future Writings. Remove it there first.");
       if (downloadFileIds(await data.settings.get("downloads", {})).includes(id)) throw new HttpError(409, "This file is used on the Downloads page. Change it there first.");
       await storage.remove(f.key);
       await data.files.remove(id);

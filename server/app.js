@@ -99,7 +99,7 @@ function createApp({ cfg, data, storage, campaigns }) {
   // ---- search engines ---------------------------------------------------------------------------
   // The public pages are open to search engines. The admin is NOT listed here on purpose (listing it
   // would advertise the hidden path); it is kept out of search by its own noindex header and meta tag.
-  const SITEMAP_PAGES = ["", "about.html", "vision.html", "mission.html", "great-transition.html", "master-light.html",
+  const SITEMAP_PAGES = ["", "about.html", "ra-soul.html", "vision.html", "mission.html", "great-transition.html", "master-light.html",
     "book.html", "explore.html", "inner-sun.html", "light-code.html", "my-writing.html", "faqs.html", "downloads.html", "connect.html"];
   const siteOrigin = (req) => cfg.siteUrl || `${req.protocol}://${req.get("host")}`;
   app.get("/robots.txt", (req, res) => {
