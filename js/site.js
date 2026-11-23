@@ -73,7 +73,7 @@
     '<li><a href="great-transition.html">The Great Transition</a></li>' +
     '<li><a href="master-light.html">The Master Light</a></li></ul></div>' +
     '<div><h4>Connect</h4><ul>' +
-    '<li><a href="connect.html#updates">Follow Book Updates</a></li>' +
+    '<li><a href="connect.html#updates">Subscribe</a></li>' +
     '<li><a href="connect.html#contact">Contact the Author</a></li>' +
     '<li><a href="connect.html#follow">Follow RaSoul</a></li>' +
     '<li><a href="connect.html#inner-sun">Join Inner Sun</a></li>' +

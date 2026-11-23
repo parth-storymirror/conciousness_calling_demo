@@ -1012,3 +1012,6 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
 @media (max-width:640px){.rs-lower .rs-terms{grid-template-columns:1fr}}
 .rs-lower .btns{justify-content:center}
 .rs-lower [hidden]{display:none !important}
+
+/* "Coming Soon" label: looks like a button but is not clickable */
+.btn.soon{background:transparent;color:var(--gold-deep);border:1.5px dashed var(--gold);cursor:default;pointer-events:none;box-shadow:none}
