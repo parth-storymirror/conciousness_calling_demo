@@ -1,7 +1,7 @@
 (function () {
   var pages = [
     ["index.html", "Home"],
-    ["about.html", "About"],
+    ["about.html", "About Us"],
     ["book.html", "Book One"],
     ["explore.html", "Explore Consciousness Calling"],
     ["inner-sun.html", "Inner Sun"],
@@ -65,7 +65,7 @@
     '<li><a href="my-writing.html">Future Writings</a></li>' +
     '<li><a href="faqs.html">FAQs</a></li>' +
     '<li><a href="downloads.html">Downloads</a></li></ul></div>' +
-    '<div><h4>About</h4><ul>' +
+    '<div><h4>About Us</h4><ul>' +
     '<li><a href="about.html">About the Author</a></li>' +
     '<li><a href="ra-soul.html">RA SOUL</a></li>' +
     '<li><a href="vision.html">The Consciousness Calling Vision</a></li>' +

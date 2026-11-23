@@ -4,7 +4,7 @@ const DEFAULT_BANNER = { enabled: false, speed: "normal", items: [] };
 const DEFAULT_WRITINGS = [
   { type: "image", data: { url: "/assets/img/writing-five-living-movements.jpg", alt: "Artwork titled Consciousness Calling, The Five Living Movements, One Consciousness, an Ever-Unfolding Journey: five meditating figures rising on lotuses along a spiral of golden light, labelled 01 Consciousness Calling, 02 Consciousness Revealing, 03 Consciousness Living, 04 Consciousness Embodied and 05 The Great Remembering.", caption: "", size: "medium", fileId: null } },
   { type: "title", data: { text: "CONSCIOUSNESS CALLING", subtitle: "The Larger Body of Work" } },
-  { type: "text", data: { text: "Consciousness Calling is intended as the master identity for a larger body of work. The architecture is deliberately not being forced into a fixed number of books. Five major movements are presently visible." } },
+  { type: "text", data: { text: "Consciousness Calling is an evolving body of books, contemplative writing and Light Code artwork exploring how inner recognition becomes conscious living, embodiment and service. Each work carries its own inquiry, while participating in the same Five Living Movements." } },
   {
     type: "text",
     data: {

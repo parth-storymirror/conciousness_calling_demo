@@ -7,7 +7,7 @@ const auth = require("../auth");
 const { HttpError, bad, str, normalizeEmail, validateBlock, classifyUpload, normalizeBanner, validateBanner, normalizeDownloads, validateDownloads, downloadFileIds } = require("../validate");
 
 const MAX_IMAGE = 8 * 1024 * 1024;
-const MAX_FILE = 25 * 1024 * 1024;
+const MAX_FILE = 100 * 1024 * 1024;
 
 function createAdminRouter({ cfg, data, storage, campaigns }) {
   const r = express.Router();
@@ -157,7 +157,7 @@ function createAdminRouter({ cfg, data, storage, campaigns }) {
   r.post("/files", requireAuth, (req, res, next) => {
     upload(req, res, async (err) => {
       try {
-        if (err) throw new HttpError(err.code === "LIMIT_FILE_SIZE" ? 413 : 400, err.code === "LIMIT_FILE_SIZE" ? "That file is too large (max 25 MB)." : "Upload failed.");
+        if (err) throw new HttpError(err.code === "LIMIT_FILE_SIZE" ? 413 : 400, err.code === "LIMIT_FILE_SIZE" ? "That file is too large (max 100 MB)." : "Upload failed.");
         if (!req.file) throw bad("Choose a file to upload.");
         const kind = req.body && req.body.kind === "image" ? "image" : "file";
         if (kind === "image" && req.file.size > MAX_IMAGE) throw new HttpError(413, "Images can be up to 8 MB.");

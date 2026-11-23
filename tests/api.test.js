@@ -398,3 +398,21 @@ test("/index.html redirects permanently to the home page at /", async () => {
     assert.equal((await fetch(`${s.base}/`)).status, 200);
   } finally { await s.close(); }
 });
+
+test("uploads: a large EPUB (over the old 25 MB limit) is accepted, a wrong-type file is not", async () => {
+  const s = await start();
+  try {
+    const a = client(s.base); await a.login();
+    const epub = Buffer.alloc(38 * 1024 * 1024, 1); epub[0] = 0x50; epub[1] = 0x4b; epub[2] = 3; epub[3] = 4; // "PK" zip header, 38 MB
+    const fd = new FormData();
+    fd.append("kind", "file");
+    fd.append("file", new Blob([epub], { type: "application/epub+zip" }), "From_Emotion_to_Light.epub");
+    const up = await a.admin("POST", "/files", fd);
+    assert.equal(up.status, 201, JSON.stringify(up.json));
+    assert.equal(up.json.file.mime, "application/epub+zip");
+    const bad = new FormData();
+    bad.append("kind", "file");
+    bad.append("file", new Blob([Buffer.from("not a zip")], { type: "application/epub+zip" }), "broken.epub");
+    assert.equal((await a.admin("POST", "/files", bad)).status, 400, "an .epub that is not a real zip is refused");
+  } finally { await s.close(); }
+});

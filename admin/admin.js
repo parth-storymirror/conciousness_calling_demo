@@ -389,7 +389,7 @@
 
       box.appendChild(h("div", { class: "card" },
         h("h3", { text: "Upload a file for visitors to download" }),
-        h("p", { class: "hint", text: "PDF, EPUB, Word, Excel, PowerPoint, ZIP, text or images up to 25 MB, stored in the website's folder in the CDN bucket. After uploading, pick it from any message above." }),
+        h("p", { class: "hint", text: "PDF, EPUB, Word, Excel, PowerPoint, ZIP, text or images up to 100 MB (images in Future Writings up to 8 MB), stored in the website's folder in the CDN bucket. After uploading, pick it from any message above." }),
         uploadRow(function () { loadAll(); })));
 
       var rows = data.files.map(function (f) {

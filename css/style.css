@@ -945,7 +945,7 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
   .brand{flex:0 1 auto;min-width:0;font-size:clamp(14px,.6vw + 7px,20px);letter-spacing:.04em;gap:10px}
   .brand img{width:clamp(34px,2.6vw,48px);height:clamp(34px,2.6vw,48px)}
   .nav{flex:0 1 auto;min-width:0;gap:clamp(0px,.3vw,6px)}
-  .nav a{padding:9px clamp(5px,.55vw,12px);font-size:clamp(10.5px,.5vw + 5px,13px);letter-spacing:clamp(.02em,.3vw - .02em,.07em)}
+  .nav a{padding:9px clamp(3px,.4vw,12px);font-size:clamp(10px,.5vw + 4.4px,13px);letter-spacing:clamp(.02em,.3vw - .02em,.07em)}
 }
 
 /* Logo and name are larger than the menu links on tablets and phones too */
@@ -1020,3 +1020,5 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
 .rs-lower .rs-guide-sub{margin:.55em 0 0}
 .rs-lower .rs-quote{margin:1.1em 0 .3em}
 section.block.rs-lower{padding-bottom:40px}
+
+.sub-note{margin:-.2em 0 1em;font-size:15px;line-height:1.5;color:var(--ink);opacity:.85}
