@@ -1015,3 +1015,8 @@ main .lightcode,.mnote .lightcode,.edition .lightcode,.faq-body .lightcode{margi
 
 /* "Coming Soon" label: looks like a button but is not clickable */
 .btn.soon{background:transparent;color:var(--gold-deep);border:1.5px dashed var(--gold);cursor:default;pointer-events:none;box-shadow:none}
+/* RA SOUL closing block: even spacing (more room above the button, less below the quote) */
+.rs-lower .btns{margin-top:36px}
+.rs-lower .rs-guide-sub{margin:.55em 0 0}
+.rs-lower .rs-quote{margin:1.1em 0 .3em}
+section.block.rs-lower{padding-bottom:40px}
